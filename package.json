@@ -1,0 +1,17 @@
+{
+  "name": "rndx_contract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@haechi-labs/vvisp": "^2.1.1",
+    "caver-js": "^1.6.8",
+    "solc": "^0.5.6",
+    "truffle": "^4.1.15"
+  }
+}
