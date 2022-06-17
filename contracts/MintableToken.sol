@@ -10,17 +10,19 @@ import "./OwnableToken.sol";
 // ----------------------------------------------------------------------------
 contract MintableToken is KIP7Mintable, OwnableToken{
     event MintFinished();
+    event MintReStart();
 
     bool public mintingFinished = false;
 
     modifier canMint() { require(!mintingFinished); _; }
+    modifier cantMint() { require(mintingFinished); _; }
 
     function mint(address _to, uint256 _amount) onlyOwner canMint public returns (bool){
         return super.mint(_to, _amount);
     }
 
     function addMinter(address account) onlyOwner public {
-        return
+        super.addMinter(account);
     }
 
     function renounceMinter() onlyOwner public {
@@ -35,6 +37,12 @@ contract MintableToken is KIP7Mintable, OwnableToken{
     function finishMinting() onlyOwner canMint public returns (bool) {
         mintingFinished = true;
         emit MintFinished();
+        return true;
+    }
+
+    function reStartMinting() onlyOwner cantMint public returns (bool) {
+        mintingFinished = false;
+        emit MintReStart();
         return true;
     }
 }
