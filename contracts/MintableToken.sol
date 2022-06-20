@@ -25,10 +25,6 @@ contract MintableToken is KIP7Mintable, OwnableToken{
         super.addMinter(account);
     }
 
-    function renounceMinter() onlyOwner public {
-        return;
-    }
-
     function renounceMinter(address account) onlyOwner public {
          require (account != super.owner());
         _removeMinter(account);

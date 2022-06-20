@@ -1,174 +1,6 @@
 pragma solidity ^0.5.0;
 
 /**
- * @dev Interface of the KIP-13 standard, as defined in the
- * [KIP-13](http://kips.klaytn.com/KIPs/kip-13-interface_query_standard).
- *
- * Implementers can declare support of contract interfaces, which can then be
- * queried by others.
- *
- * For an implementation, see `KIP13`.
- */
-interface IKIP13 {
-    /**
-     * @dev Returns true if this contract implements the interface defined by
-     * `interfaceId`. See the corresponding
-     * [KIP-13 section](http://kips.klaytn.com/KIPs/kip-13-interface_query_standard#how-interface-identifiers-are-defined)
-     * to learn more about how these ids are created.
-     *
-     * This function call must use less than 30 000 gas.
-     */
-    function supportsInterface(bytes4 interfaceId) external view returns (bool);
-}
-
-/**
- * @dev Implementation of the `IKIP13` interface.
- *
- * Contracts may inherit from this and call `_registerInterface` to declare
- * their support of an interface.
- */
-contract KIP13 is IKIP13 {
-    /*
-     * bytes4(keccak256('supportsInterface(bytes4)')) == 0x01ffc9a7
-     */
-    bytes4 private constant _INTERFACE_ID_KIP13 = 0x01ffc9a7;
-
-    /**
-     * @dev Mapping of interface ids to whether or not it's supported.
-     */
-    mapping(bytes4 => bool) private _supportedInterfaces;
-
-    constructor () internal {
-        // Derived contracts need only register support for their own interfaces,
-        // we register support for KIP13 itself here
-        _registerInterface(_INTERFACE_ID_KIP13);
-    }
-
-    /**
-     * @dev See `IKIP13.supportsInterface`.
-     *
-     * Time complexity O(1), guaranteed to always use less than 30 000 gas.
-     */
-    function supportsInterface(bytes4 interfaceId) external view returns (bool) {
-        return _supportedInterfaces[interfaceId];
-    }
-
-    /**
-     * @dev Registers the contract as an implementer of the interface defined by
-     * `interfaceId`. Support of the actual KIP13 interface is automatic and
-     * registering its interface id is not required.
-     *
-     * See `IKIP13.supportsInterface`.
-     *
-     * Requirements:
-     *
-     * - `interfaceId` cannot be the KIP13 invalid interface (`0xffffffff`).
-     */
-    function _registerInterface(bytes4 interfaceId) internal {
-        require(interfaceId != 0xffffffff, "KIP13: invalid interface id");
-        _supportedInterfaces[interfaceId] = true;
-    }
-}
-
-/**
- * @dev Interface of the KIP7 standard as defined in the KIP. Does not include
- * the optional functions; to access them see `KIP7Metadata`.
- * See http://kips.klaytn.com/KIPs/kip-7-fungible_token
- */
-contract IKIP7 is IKIP13 {
-    /**
-     * @dev Returns the amount of tokens in existence.
-     */
-    function totalSupply() external view returns (uint256);
-
-    /**
-     * @dev Returns the amount of tokens owned by `account`.
-     */
-    function balanceOf(address account) external view returns (uint256);
-
-    /**
-     * @dev Moves `amount` tokens from the caller's account to `recipient`.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a `Transfer` event.
-     */
-    function transfer(address recipient, uint256 amount) external returns (bool);
-
-    /**
-     * @dev Returns the remaining number of tokens that `spender` will be
-     * allowed to spend on behalf of `owner` through `transferFrom`. This is
-     * zero by default.
-     *
-     * This value changes when `approve` or `transferFrom` are called.
-     */
-    function allowance(address owner, address spender) external view returns (uint256);
-
-    /**
-     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * > Beware that changing an allowance with this method brings the risk
-     * that someone may use both the old and the new allowance by unfortunate
-     * transaction ordering. One possible solution to mitigate this race
-     * condition is to first reduce the spender's allowance to 0 and set the
-     * desired value afterwards:
-     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-     *
-     * Emits an `Approval` event.
-     */
-    function approve(address spender, uint256 amount) external returns (bool);
-
-    /**
-     * @dev Moves `amount` tokens from `sender` to `recipient` using the
-     * allowance mechanism. `amount` is then deducted from the caller's
-     * allowance.
-     *
-     * Returns a boolean value indicating whether the operation succeeded.
-     *
-     * Emits a `Transfer` event.
-     */
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
-
-    /**
-    * @dev Moves `amount` tokens from the caller's account to `recipient`.
-    */
-    function safeTransfer(address recipient, uint256 amount, bytes memory data) public;
-
-    /**
-    * @dev  Moves `amount` tokens from the caller's account to `recipient`.
-    */
-    function safeTransfer(address recipient, uint256 amount) public;
-
-    /**
-    * @dev Moves `amount` tokens from `sender` to `recipient` using the allowance mechanism.
-    * `amount` is then deducted from the caller's allowance.
-    */
-    function safeTransferFrom(address sender, address recipient, uint256 amount, bytes memory data) public;
-
-    /**
-    * @dev Moves `amount` tokens from `sender` to `recipient` using the allowance mechanism.
-    * `amount` is then deducted from the caller's allowance.
-    */
-    function safeTransferFrom(address sender, address recipient, uint256 amount) public;
-
-    /**
-     * @dev Emitted when `value` tokens are moved from one account (`from`) to
-     * another (`to`).
-     *
-     * Note that `value` may be zero.
-     */
-    event Transfer(address indexed from, address indexed to, uint256 value);
-
-    /**
-     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
-     * a call to `approve`. `value` is the new allowance.
-     */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
-}
-
-/**
  * @dev Collection of functions related to the address type,
  */
 library Address {
@@ -532,6 +364,174 @@ contract Pausable is PauserRole {
         _paused = false;
         emit Unpaused(msg.sender);
     }
+}
+
+/**
+ * @dev Interface of the KIP-13 standard, as defined in the
+ * [KIP-13](http://kips.klaytn.com/KIPs/kip-13-interface_query_standard).
+ *
+ * Implementers can declare support of contract interfaces, which can then be
+ * queried by others.
+ *
+ * For an implementation, see `KIP13`.
+ */
+interface IKIP13 {
+    /**
+     * @dev Returns true if this contract implements the interface defined by
+     * `interfaceId`. See the corresponding
+     * [KIP-13 section](http://kips.klaytn.com/KIPs/kip-13-interface_query_standard#how-interface-identifiers-are-defined)
+     * to learn more about how these ids are created.
+     *
+     * This function call must use less than 30 000 gas.
+     */
+    function supportsInterface(bytes4 interfaceId) external view returns (bool);
+}
+
+/**
+ * @dev Implementation of the `IKIP13` interface.
+ *
+ * Contracts may inherit from this and call `_registerInterface` to declare
+ * their support of an interface.
+ */
+contract KIP13 is IKIP13 {
+    /*
+     * bytes4(keccak256('supportsInterface(bytes4)')) == 0x01ffc9a7
+     */
+    bytes4 private constant _INTERFACE_ID_KIP13 = 0x01ffc9a7;
+
+    /**
+     * @dev Mapping of interface ids to whether or not it's supported.
+     */
+    mapping(bytes4 => bool) private _supportedInterfaces;
+
+    constructor () internal {
+        // Derived contracts need only register support for their own interfaces,
+        // we register support for KIP13 itself here
+        _registerInterface(_INTERFACE_ID_KIP13);
+    }
+
+    /**
+     * @dev See `IKIP13.supportsInterface`.
+     *
+     * Time complexity O(1), guaranteed to always use less than 30 000 gas.
+     */
+    function supportsInterface(bytes4 interfaceId) external view returns (bool) {
+        return _supportedInterfaces[interfaceId];
+    }
+
+    /**
+     * @dev Registers the contract as an implementer of the interface defined by
+     * `interfaceId`. Support of the actual KIP13 interface is automatic and
+     * registering its interface id is not required.
+     *
+     * See `IKIP13.supportsInterface`.
+     *
+     * Requirements:
+     *
+     * - `interfaceId` cannot be the KIP13 invalid interface (`0xffffffff`).
+     */
+    function _registerInterface(bytes4 interfaceId) internal {
+        require(interfaceId != 0xffffffff, "KIP13: invalid interface id");
+        _supportedInterfaces[interfaceId] = true;
+    }
+}
+
+/**
+ * @dev Interface of the KIP7 standard as defined in the KIP. Does not include
+ * the optional functions; to access them see `KIP7Metadata`.
+ * See http://kips.klaytn.com/KIPs/kip-7-fungible_token
+ */
+contract IKIP7 is IKIP13 {
+    /**
+     * @dev Returns the amount of tokens in existence.
+     */
+    function totalSupply() public view returns (uint256);
+
+    /**
+     * @dev Returns the amount of tokens owned by `account`.
+     */
+    function balanceOf(address account) public view returns (uint256);
+
+    /**
+     * @dev Moves `amount` tokens from the caller's account to `recipient`.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a `Transfer` event.
+     */
+    function transfer(address recipient, uint256 amount) public returns (bool);
+
+    /**
+     * @dev Returns the remaining number of tokens that `spender` will be
+     * allowed to spend on behalf of `owner` through `transferFrom`. This is
+     * zero by default.
+     *
+     * This value changes when `approve` or `transferFrom` are called.
+     */
+    function allowance(address owner, address spender) public view returns (uint256);
+
+    /**
+     * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * > Beware that changing an allowance with this method brings the risk
+     * that someone may use both the old and the new allowance by unfortunate
+     * transaction ordering. One possible solution to mitigate this race
+     * condition is to first reduce the spender's allowance to 0 and set the
+     * desired value afterwards:
+     * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
+     *
+     * Emits an `Approval` event.
+     */
+    function approve(address spender, uint256 amount) public returns (bool);
+
+    /**
+     * @dev Moves `amount` tokens from `sender` to `recipient` using the
+     * allowance mechanism. `amount` is then deducted from the caller's
+     * allowance.
+     *
+     * Returns a boolean value indicating whether the operation succeeded.
+     *
+     * Emits a `Transfer` event.
+     */
+    function transferFrom(address sender, address recipient, uint256 amount) public returns (bool);
+
+    /**
+    * @dev Moves `amount` tokens from the caller's account to `recipient`.
+    */
+    function safeTransfer(address recipient, uint256 amount, bytes memory data) public;
+
+    /**
+    * @dev  Moves `amount` tokens from the caller's account to `recipient`.
+    */
+    function safeTransfer(address recipient, uint256 amount) public;
+
+    /**
+    * @dev Moves `amount` tokens from `sender` to `recipient` using the allowance mechanism.
+    * `amount` is then deducted from the caller's allowance.
+    */
+    function safeTransferFrom(address sender, address recipient, uint256 amount, bytes memory data) public;
+
+    /**
+    * @dev Moves `amount` tokens from `sender` to `recipient` using the allowance mechanism.
+    * `amount` is then deducted from the caller's allowance.
+    */
+    function safeTransferFrom(address sender, address recipient, uint256 amount) public;
+
+    /**
+     * @dev Emitted when `value` tokens are moved from one account (`from`) to
+     * another (`to`).
+     *
+     * Note that `value` may be zero.
+     */
+    event Transfer(address indexed from, address indexed to, uint256 value);
+
+    /**
+     * @dev Emitted when the allowance of a `spender` for an `owner` is set by
+     * a call to `approve`. `value` is the new allowance.
+     */
+    event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
 /**
@@ -997,8 +997,8 @@ contract KIP7Pausable is KIP13, KIP7, Pausable {
  * `onlyOwner`, which can be aplied to your functions to restrict their use to
  * the owner.
  */
-contract Ownable {
-    address payable private _owner;
+contract Ownable { 
+    address private _owner;
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
@@ -1013,7 +1013,7 @@ contract Ownable {
     /**
      * @dev Returns the address of the current owner.
      */
-    function owner() public view returns (address payable) {
+    function owner() public view returns (address ) {
         return _owner;
     }
 
@@ -1048,14 +1048,14 @@ contract Ownable {
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      * Can only be called by the current owner.
      */
-    function transferOwnership(address payable newOwner) public onlyOwner {
+    function transferOwnership(address  newOwner) public onlyOwner {
         _transferOwnership(newOwner);
     }
 
     /**
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      */
-    function _transferOwnership(address payable newOwner) internal {
+    function _transferOwnership(address  newOwner) internal {
         require(newOwner != address(0), "Ownable: new owner is the zero address");
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
@@ -1124,10 +1124,6 @@ contract PausableToken is KIP7Pausable, OwnableToken {
 
     function addPauser(address account) public onlyOwner{
       super.addPauser(account);
-    }
-
-    function renouncePauser() onlyOwner public {
-        return;
     }
 
     function renouncePauser(address account) onlyOwner public {
@@ -1202,10 +1198,6 @@ contract MintableToken is KIP7Mintable, OwnableToken{
 
     function addMinter(address account) onlyOwner public {
         super.addMinter(account);
-    }
-
-    function renounceMinter() onlyOwner public {
-        return;
     }
 
     function renounceMinter(address account) onlyOwner public {

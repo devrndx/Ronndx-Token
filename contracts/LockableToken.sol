@@ -25,10 +25,6 @@ contract PausableToken is KIP7Pausable, OwnableToken {
       super.addPauser(account);
     }
 
-    function renouncePauser() onlyOwner public {
-        return;
-    }
-
     function renouncePauser(address account) onlyOwner public {
          require (account != super.owner());
         _removePauser(account);
